@@ -4,6 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MarketLens — Gold, silver and Indian stock outlook, in plain words</title>
+<meta name="description" content="Gold 24K ₹1,37,261/10 g · Silver ₹1,76,495/kg · updated 05 Nov 07:35 AM IST">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MarketLens">
+<meta property="og:title" content="Today's gold and silver price, and where they may head next">
+<meta property="og:description" content="Gold 24K ₹1,37,261/10 g · Silver ₹1,76,495/kg · updated 05 Nov 07:35 AM IST">
+<meta property="og:image" content="https://saibalajit28.github.io/marketlens/og.png?v=0">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Today's gold and silver price, and where they may head next">
+<meta name="twitter:description" content="Gold 24K ₹1,37,261/10 g · Silver ₹1,76,495/kg · updated 05 Nov 07:35 AM IST">
+<meta name="twitter:image" content="https://saibalajit28.github.io/marketlens/og.png?v=0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -147,6 +158,7 @@ details.more{border:0;margin-top:8px}details.more summary{font-weight:500;font-s
   <h1>Where gold, silver and Indian stocks may head next, in plain words.</h1>
   <p>Every hour this page reads the latest prices and news, then estimates the chance that each asset is higher in an hour, a day, a week or a month. It also keeps score of its own past calls. It is a research tool, not advice.</p>
   <div class="strip" id="strip">Loading the latest update…</div>
+  <p style="margin:16px 0 0"><button class="btn" id="share" type="button">Share today’s prices</button> <span id="shared" style="font-size:14px;color:var(--ink-2);margin-left:10px"></span></p>
   <div class="legend"><span><span class="arrow up">▲</span><b>Likely to rise</b></span><span><span class="arrow down">▼</span><b>Likely to fall</b></span><span><span class="arrow flat">•</span><b>Could go either way</b></span><span>Each call also says how sure the model is: slight, fair or strong.</span></div>
 </section>
 
@@ -271,6 +283,7 @@ function detailRow(a){
 async function load(){
   const L=await fresh('latest.json');
   const strip=document.getElementById('strip');
+  runTime=L?L.run_time:0;
   if(!L){strip.textContent='No update yet. On GitHub, open the Actions tab and run "hourly-scoring" once.';return;}
   strip.innerHTML=`<span><span class="dot"></span>Updated <b>${when(L.run_time)}</b></span>`
     +(L.nifty?`<span>Nifty 50 <b>${L.nifty.level.toLocaleString('en-IN')}</b> ${pct(L.nifty.change_1d_pct)} today</span>`:'')
@@ -333,7 +346,15 @@ async function setupCheck(){
   draw(0);
 })();
 
-load(); loadOndemand(); setupCheck();
+let runTime=0;
+document.getElementById('share').onclick=async()=>{
+  const d=new Date((runTime||Date.now()/1000)*1000), tag=d.toISOString().slice(5,13).replace('-','').replace('T','-');
+  const url=`${location.origin}${location.pathname}?u=${tag}`;
+  const text=document.querySelector('meta[property="og:description"]').content;
+  if(navigator.share){ try{ await navigator.share({title:'MarketLens',text,url}); return; }catch(e){} }
+  try{ await navigator.clipboard.writeText(url); document.getElementById('shared').textContent='Link copied. Paste it in WhatsApp or anywhere.'; }catch(e){ prompt('Copy this link', url); }
+};
+load().then(()=>{}); loadOndemand(); setupCheck();
 </script>
 </body>
 </html>
