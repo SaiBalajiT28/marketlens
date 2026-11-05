@@ -1,0 +1,30 @@
+name: check-asset
+on:
+  workflow_dispatch:
+    inputs:
+      symbol:
+        description: "NSE symbol (e.g. RELIANCE, TATASTEEL) or GOLD / SILVER"
+        required: true
+        default: "RELIANCE"
+permissions:
+  contents: write
+concurrency: marketlens
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt
+      - run: python ondemand.py "${{ github.event.inputs.symbol }}"
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      - name: commit results
+        run: |
+          git config user.name "marketlens-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git pull --rebase || true
+          git add docs marketlens.db
+          git commit -m "check ${{ github.event.inputs.symbol }}" || echo "nothing to commit"
+          git push
