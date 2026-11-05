@@ -1,7 +1,7 @@
 name: hourly-scoring
 on:
   schedule:
-    - cron: "0 * * * *"      # every hour at :00 UTC (GitHub may start it a few minutes late)
+    - cron: "17 * * * *"      # every hour at :00 UTC (GitHub may start it a few minutes late)
   workflow_dispatch:
 permissions:
   contents: write
