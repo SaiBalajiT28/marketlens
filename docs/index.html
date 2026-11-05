@@ -206,14 +206,11 @@ const when = t => new Date(t*1000).toLocaleString('en-IN',{day:'numeric',month:'
 const fresh = u => fetch(u+'?t='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null);
 function rsiWords(r){ if(r==null) return '—'; if(r>70) return `${Math.round(r)} · stretched high`; if(r<30) return `${Math.round(r)} · oversold`; return `${Math.round(r)} · normal`; }
 function trendWords(t){ t=t||''; if(t.includes('uptrend')) return 'Price is above its recent averages, so the trend is up.'; if(t.includes('downtrend')) return 'Price is below its recent averages, so the trend is down.'; return 'Price is close to its recent averages; no strong trend.'; }
+function odds(p){ const n=Math.round(p*100); if(n>=60) return `about ${Math.round(n/10)} in 10 chance of going up`; if(n<=40) return `about ${Math.round(n/10)} in 10 chance of going up`; return `${n}% chance of going up, close to a coin toss`; }
+function lean(v){ return v.label==='lean buy'?'more likely to rise than fall':v.label==='lean sell'?'more likely to fall than rise':'no clear direction'; }
 function verdictSentence(a){
   const d=a.horizons['1d'], w=a.horizons['1w'];
-  const p=Math.round(d.prob_up*100);
-  const lead = d.label==='lean buy'?`<b>Leaning up over the next day</b> (${p}% chance of being higher).`
-             : d.label==='lean sell'?`<b>Leaning down over the next day</b> (${p}% chance of being higher).`
-             : `<b>No clear direction for the next day</b> (${p}% chance of being higher).`;
-  const wk = w.label==='lean buy'?'Over the week the lean is up.':w.label==='lean sell'?'Over the week the lean is down.':'The week ahead is unclear too.';
-  return `<div class="verdict ${dir(d.label)}">${lead} ${wk}</div>`;
+  return `<div class="verdict ${dir(d.label)}"><b>Next day:</b> ${lean(d)} (${odds(d.prob_up)}).<br><b>Next week:</b> ${lean(w)} (${odds(w.prob_up)}).</div>`;
 }
 function whyList(a){
   const s=a.reasons.sentiment_score||0;
