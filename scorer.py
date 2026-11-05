@@ -83,6 +83,10 @@ def run_hourly():
     json.dump({"run_time": time.time(), "usdinr": usdinr, "nifty": nifty, "assets": results, "errors": errors},
               open("docs/latest.json", "w"))
     json.dump(db.accuracy(), open("docs/accuracy.json", "w"))
+    try:
+        import ogimage; ogimage.make(); ogimage.stamp_html()
+    except Exception as e:
+        print("[warn] preview image failed:", e)
     return results
 
 if __name__ == "__main__":
