@@ -3,228 +3,314 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MarketLens — Gold, silver and NSE signals in ₹</title>
+<title>MarketLens — Gold, silver and Indian stock outlook, in plain words</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#F6F7F9;--panel:#FFFFFF;--ink:#17202E;--ink-2:#55627A;--line:#D8DEE7;--line-2:#EBEFF4;
-  --up:#1D7A49;--up-bg:#E6F4EC;--down:#B32B1E;--down-bg:#FBEAE7;--flat:#6B7689;--flat-bg:#EEF1F5;
-  --gold:#A8832A;--silver:#6F7B8C;--focus:#2457C5;
+  --bg:#F3F4F6;--panel:#FFFFFF;--ink:#171A21;--ink-2:#5F6775;--ink-3:#8A93A3;--line:#E1E5EB;
+  --gold:#B8942F;--gold-2:#E9D48C;--silver:#9AA3B2;--silver-2:#E6E9EF;
+  --up:#1E7F55;--up-bg:#E7F5ED;--down:#B8392B;--down-bg:#FBEBE8;--flat:#6B7483;--flat-bg:#EEF0F4;
+  --focus:#2F62D6;
+  --metal:linear-gradient(135deg,#F7F7F9 0%,#D9DDE4 35%,#F4EBCF 70%,#C9A24A 100%);
+  --metal-silver:linear-gradient(135deg,#FAFBFC,#CDD3DC 50%,#F2F4F7);
+  --metal-gold:linear-gradient(135deg,#FBF3DC,#D8B75A 50%,#F7ECC9);
   color-scheme:light;
 }
-@media (prefers-color-scheme:dark){:root{
-  --paper:#0F141C;--panel:#161C26;--ink:#E8ECF2;--ink-2:#9AA6B8;--line:#2A3342;--line-2:#1F2733;
-  --up:#4CC47E;--up-bg:#163424;--down:#F0786B;--down-bg:#3D1F1B;--flat:#9AA6B8;--flat-bg:#232B38;
-  --gold:#D9B35A;--silver:#A9B4C4;--focus:#6B9BFF;color-scheme:dark;
-}}
 *{box-sizing:border-box}
-html{scroll-padding-top:12px}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.5;font-variant-numeric:tabular-nums}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Manrope",system-ui,sans-serif;font-size:15.5px;line-height:1.55;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
 a{color:inherit}
-.wrap{max-width:1120px;margin:0 auto;padding:0 20px 60px}
-header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 24px;padding:28px 0 18px;border-bottom:1px solid var(--line)}
-header h1{margin:0;font-size:22px;font-weight:600;letter-spacing:-.01em}
-header .meta{color:var(--ink-2);font-size:14px}
-header .meta b{color:var(--ink);font-weight:500}
-h2{font-size:17px;font-weight:600;margin:40px 0 4px}
-.sub{color:var(--ink-2);font-size:14px;margin:0 0 14px}
-.notice{margin:18px 0 0;padding:12px 14px;border-left:3px solid var(--gold);background:var(--panel);font-size:14px;color:var(--ink-2)}
-.notice b{color:var(--ink);font-weight:500}
+#sky{position:fixed;inset:0;z-index:-1;width:100%;height:100%}
+.wrap{max-width:1140px;margin:0 auto;padding:0 20px 70px}
 
-/* bullion board */
-.board{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
-@media(max-width:720px){.board{grid-template-columns:1fr}}
-.metal{background:var(--panel);border:1px solid var(--line);padding:20px 22px 18px}
-.metal.gold{border-top:4px solid var(--gold)}.metal.silver{border-top:4px solid var(--silver)}
-.metal .title{display:flex;justify-content:space-between;align-items:baseline}
-.metal .title h3{margin:0;font-size:16px;font-weight:600}
-.metal .title span{color:var(--ink-2);font-size:13px}
-.metal .big{font-size:38px;font-weight:600;letter-spacing:-.02em;line-height:1.1;margin:10px 0 2px}
-.metal .big small{font-size:15px;font-weight:400;color:var(--ink-2);margin-left:6px}
-.metal .chg{font-size:14px;margin-bottom:14px}
-.metal dl{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:0 0 14px;font-size:14px}
-.metal dt{color:var(--ink-2)}.metal dd{margin:0;text-align:right}
-.metal .outlook{display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid var(--line-2);padding-top:12px}
+/* top */
+nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.01em;font-size:18px}
+.brand i{width:26px;height:26px;border-radius:7px;background:var(--metal);box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+nav .links{display:flex;gap:18px;font-size:14px;color:var(--ink-2)}
+nav .links a{text-decoration:none}nav .links a:hover{color:var(--ink)}
+@media(max-width:640px){nav .links{display:none}}
 
-.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;font-size:13px;font-weight:500;background:var(--flat-bg);color:var(--flat);white-space:nowrap}
+.hero{padding:54px 0 26px}
+.hero h1{font-size:clamp(28px,4.6vw,44px);line-height:1.08;letter-spacing:-.025em;font-weight:700;margin:0 0 14px;max-width:16ch}
+.hero p{margin:0;max-width:58ch;color:var(--ink-2);font-size:16.5px}
+.strip{display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:22px;font-size:14px;color:var(--ink-2)}
+.strip b{color:var(--ink);font-weight:600}
+.strip .dot{width:7px;height:7px;border-radius:50%;background:var(--up);display:inline-block;margin-right:6px;vertical-align:middle}
+
+h2{font-size:21px;font-weight:700;letter-spacing:-.015em;margin:46px 0 6px}
+.sub{color:var(--ink-2);margin:0 0 16px;max-width:70ch}
+
+/* metallic panels */
+.panel{position:relative;background:var(--panel);border-radius:18px;padding:1px}
+.panel::before{content:"";position:absolute;inset:0;border-radius:18px;padding:1px;background:var(--metal);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.panel>.in{background:var(--panel);border-radius:17px;padding:22px 24px}
+.panel.soft::before{background:var(--metal-silver)}
+
+.board{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.board{grid-template-columns:1fr}}
+.metal .head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.metal .head h3{margin:0;font-size:17px;font-weight:700;display:flex;align-items:center;gap:10px}
+.coin{width:30px;height:30px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.08)}
+.coin.gold{background:var(--metal-gold)}.coin.silver{background:var(--metal-silver)}
+.metal .unit{font-size:13px;color:var(--ink-2)}
+.metal .big{font-size:clamp(34px,5vw,44px);font-weight:700;letter-spacing:-.03em;line-height:1.05;margin:14px 0 4px}
+.metal .big small{font-size:14px;font-weight:500;color:var(--ink-2);letter-spacing:0;margin-left:8px}
+.metal .chg{font-size:14px;color:var(--ink-2);margin-bottom:14px}
+.verdict{border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.45;margin:12px 0 14px}
+.verdict.up{background:var(--up-bg)}.verdict.down{background:var(--down-bg)}.verdict.flat{background:var(--flat-bg)}
+.verdict b{font-weight:700}
+.rates{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;font-size:14px;margin:0 0 14px;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.rates div{display:flex;justify-content:space-between;gap:10px}.rates span{color:var(--ink-2)}
+.why{font-size:14px;color:var(--ink-2);margin:0}
+.why li{margin:3px 0}.why ul{margin:6px 0 0;padding-left:18px}
+.hz{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:13px;font-weight:600;background:var(--flat-bg);color:var(--flat);white-space:nowrap}
 .chip.up{background:var(--up-bg);color:var(--up)}.chip.down{background:var(--down-bg);color:var(--down)}
-.chip em{font-style:normal;font-weight:400;opacity:.8}
-.pos{color:var(--up)}.neg{color:var(--down)}
+.chip em{font-style:normal;font-weight:500;opacity:.85}
+.pos{color:var(--up);font-weight:600}.neg{color:var(--down);font-weight:600}
 
-/* tables */
-.tablewrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line)}
-table{border-collapse:collapse;width:100%;font-size:14px}
-th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line-2);vertical-align:middle;white-space:nowrap}
-th{font-weight:500;color:var(--ink-2);background:var(--panel);position:sticky;top:0}
+/* table */
+.tablewrap{overflow-x:auto;border-radius:17px}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{padding:12px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}
+th{font-weight:600;color:var(--ink-2);font-size:13px}
+thead th{border-bottom:1px solid #CBD1DA}
 td.num,th.num{text-align:right}
-tr.row{cursor:pointer}tr.row:hover td{background:var(--line-2)}
-tr.detail td{white-space:normal;background:var(--paper);color:var(--ink-2);padding:12px 16px 14px}
-tr.detail td b{color:var(--ink);font-weight:500}
+tr.row{cursor:pointer}tr.row:hover td{background:#F7F8FA}
+tr.row td:first-child{font-weight:600}
+tr.row td:first-child span{display:block;font-weight:400;color:var(--ink-2);font-size:13px}
+tr.detail td{white-space:normal;background:#FAFBFC;color:var(--ink-2);padding:14px 18px 16px;line-height:1.6}
+tr.detail td b{color:var(--ink);font-weight:600}
 tr.detail ul{margin:8px 0 0;padding-left:18px}
-.bar{display:inline-block;width:46px;height:6px;background:var(--line);vertical-align:middle;margin-right:7px;border-radius:3px;overflow:hidden}
-.bar i{display:block;height:100%;background:var(--flat)}
-.bar.up i{background:var(--up)}.bar.down i{background:var(--down)}
+.sig{display:inline-flex;align-items:center;gap:8px}
+.bar{width:44px;height:6px;background:var(--line);border-radius:3px;overflow:hidden;flex:none}
+.bar i{display:block;height:100%;background:var(--flat)}.bar.up i{background:var(--up)}.bar.down i{background:var(--down)}
+.sig .w{font-weight:600}.sig.up .w{color:var(--up)}.sig.down .w{color:var(--down)}.sig.flat .w{color:var(--flat)}.sig .p{color:var(--ink-3);font-size:13px}
+.bar{width:34px}
 
-/* check panel */
-.check{background:var(--panel);border:1px solid var(--line);padding:20px 22px;display:grid;grid-template-columns:1fr auto;gap:14px 16px;align-items:end}
-@media(max-width:720px){.check{grid-template-columns:1fr}}
+/* check */
+.check{display:grid;grid-template-columns:1fr auto;gap:14px 16px;align-items:end}
+@media(max-width:700px){.check{grid-template-columns:1fr}}
 label{display:block;font-size:14px;color:var(--ink-2);margin-bottom:6px}
-input[type=text]{width:100%;padding:10px 12px;font:inherit;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:4px}
-input:focus,button:focus,a.btn:focus{outline:2px solid var(--focus);outline-offset:2px}
-.btn{display:inline-block;padding:10px 16px;font:inherit;font-weight:500;border:1px solid var(--ink);background:var(--ink);color:var(--paper);border-radius:4px;text-decoration:none;cursor:pointer}
-.btn.quiet{background:transparent;color:var(--ink)}
-.howto{grid-column:1/-1;font-size:14px;color:var(--ink-2);margin:0;padding-top:4px;border-top:1px solid var(--line-2)}
-.howto ol{margin:6px 0 0;padding-left:20px}
-.results{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-.card{background:var(--panel);border:1px solid var(--line);padding:14px 16px}
-.card h4{margin:0;font-size:15px;font-weight:600}
+input[type=text]{width:100%;padding:12px 14px;font:inherit;border:1px solid #CBD1DA;background:#FBFBFC;color:var(--ink);border-radius:10px}
+input:focus,a.btn:focus,button:focus,details summary:focus{outline:2px solid var(--focus);outline-offset:2px}
+.btn{display:inline-block;padding:12px 20px;font:inherit;font-weight:600;color:#fff;background:linear-gradient(180deg,#2A2F3A,#171A21);border-radius:10px;text-decoration:none;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 1px 2px rgba(0,0,0,.2)}
+.btn:hover{filter:brightness(1.08)}
+.howto{grid-column:1/-1;font-size:14px;color:var(--ink-2);margin:0;padding-top:12px;border-top:1px solid var(--line)}
+.howto ol{margin:6px 0 0;padding-left:20px}.howto b{color:var(--ink);font-weight:600}
+.results{margin-top:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.card h4{margin:0;font-size:16px;font-weight:700}
 .card .when{font-size:13px;color:var(--ink-2)}
-.card .price{font-size:22px;font-weight:600;margin:6px 0 8px}
-.card .price small{font-size:13px;font-weight:400;color:var(--ink-2)}
-.card .outlook{display:flex;gap:6px;flex-wrap:wrap}
-.card .why{font-size:13px;color:var(--ink-2);margin:10px 0 0}
-.empty{color:var(--ink-2);font-size:14px;padding:14px 0}
-footer{margin-top:50px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
-@media (prefers-reduced-motion:no-preference){tr.detail{animation:none}}
+.card .price{font-size:24px;font-weight:700;letter-spacing:-.02em;margin:8px 0 6px}
+.card .price small{font-size:13px;font-weight:500;color:var(--ink-2);letter-spacing:0}
+.card .why{margin-top:10px}
+
+/* guide */
+details{border-bottom:1px solid var(--line);padding:4px 0}
+details summary{cursor:pointer;font-weight:600;padding:12px 0;list-style:none;display:flex;justify-content:space-between;align-items:center}
+details summary::after{content:"+";color:var(--ink-3);font-weight:400;font-size:20px}
+details[open] summary::after{content:"–"}
+details p{margin:0 0 14px;color:var(--ink-2);max-width:72ch}
+.empty{color:var(--ink-2);padding:12px 0}
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2);max-width:80ch}
 </style>
 </head>
 <body>
+<canvas id="sky" aria-hidden="true"></canvas>
 <div class="wrap">
-<header>
-  <h1>MarketLens</h1>
-  <div class="meta" id="meta">Loading the latest run…</div>
-</header>
 
-<p class="notice"><b>Research signals, not advice.</b> Each number is a model probability with the reasons shown. Short-horizon accuracy of 50–60% is normal. Check the track record at the bottom before trusting anything, and never trade real money on this.</p>
+<nav>
+  <div class="brand"><i></i>MarketLens</div>
+  <div class="links"><a href="#bullion">Gold &amp; silver</a><a href="#stocks">Stocks</a><a href="#check">Check a stock</a><a href="#record">Track record</a><a href="#guide">How to read this</a></div>
+</nav>
+
+<section class="hero">
+  <h1>Where gold, silver and Indian stocks may head next, in plain words.</h1>
+  <p>Every hour this page reads the latest prices and news, then estimates the chance that each asset is higher in an hour, a day, a week or a month. It also keeps score of its own past calls. It is a research tool, not advice.</p>
+  <div class="strip" id="strip">Loading the latest update…</div>
+</section>
 
 <section id="bullion">
-  <h2>Gold and silver</h2>
-  <p class="sub">Rates in ₹ from the international price and today's USD/INR. Refreshed every hour on the hour.</p>
+  <h2>Gold and silver today</h2>
+  <p class="sub">Prices are in rupees for the units Indian buyers use: gold per 10 grams, silver per kilogram. The "India" price adds import duty and GST to the world price; shop prices add making charges on top.</p>
   <div class="board" id="board"></div>
 </section>
 
 <section id="stocks">
-  <h2>Stock signals</h2>
-  <p class="sub">Updated hourly. Click a row for the reasoning and recent headlines. Probability shown is the chance of a higher price after each period.</p>
-  <div class="tablewrap">
+  <h2>Stock outlook</h2>
+  <p class="sub">For each stock, the chance that the price is higher after each period. "Up" means a 60% or better chance of a higher price, "Down" means 40% or less, "Flat" means no clear signal. Click a row for the reasons in plain words.</p>
+  <div class="panel soft"><div class="tablewrap">
     <table id="stocktable">
-      <thead><tr><th>Stock</th><th class="num">Price ₹</th><th class="num">Today</th><th>1 hour</th><th>6 hours</th><th>1 day</th><th>1 week</th><th>1 month</th><th class="num">RSI</th></tr></thead>
+      <thead><tr><th>Stock</th><th class="num">Price</th><th class="num">Today</th><th>1 hour</th><th>6 hours</th><th>1 day</th><th>1 week</th><th>1 month</th><th>Momentum</th></tr></thead>
       <tbody></tbody>
     </table>
-  </div>
+  </div></div>
 </section>
 
 <section id="check">
   <h2>Check a particular stock or metal</h2>
-  <p class="sub">Pick any NSE stock (or gold / silver) and run a fresh analysis on it. Results land here within about two minutes.</p>
-  <div class="check">
+  <p class="sub">Pick any NSE stock, or gold or silver, and run a fresh analysis on it right now.</p>
+  <div class="panel"><div class="in check">
     <div>
-      <label for="sym">NSE symbol or name</label>
-      <input type="text" id="sym" list="symlist" placeholder="e.g. RELIANCE, TATASTEEL, GOLD, SILVER" autocomplete="off">
+      <label for="sym">Stock symbol or name</label>
+      <input type="text" id="sym" list="symlist" placeholder="Start typing, e.g. Reliance, Tata Steel, Gold" autocomplete="off">
       <datalist id="symlist"></datalist>
     </div>
     <a class="btn" id="runlink" href="#" target="_blank" rel="noopener">Run analysis</a>
     <div class="howto">
-      This opens the run page on GitHub (sign-in needed, it's your repo). There:
-      <ol><li>Click <b>Run workflow</b>.</li><li>Type the symbol shown here into the box and click the green <b>Run workflow</b>.</li><li>Come back and refresh this page after about two minutes.</li></ol>
+      This opens the run page on GitHub (your own account, sign-in needed). There:
+      <ol><li>Click <b>Run workflow</b>.</li><li>Type the symbol into the box and click the green <b>Run workflow</b> button.</li><li>Come back here and refresh after about two minutes.</li></ol>
     </div>
-  </div>
+  </div></div>
   <div class="results" id="ondemand"></div>
 </section>
 
 <section id="record">
   <h2>Track record</h2>
-  <p class="sub">Every signal is logged. When its period passes, the actual price is checked and the signal is marked right or wrong. "No edge" calls are not counted.</p>
-  <div class="tablewrap">
-    <table id="acctable"><thead><tr><th>Asset</th><th>Period</th><th class="num">Signals</th><th class="num">Right</th></tr></thead><tbody></tbody></table>
-  </div>
+  <p class="sub">Every call is saved. Once its period has passed, the real price is checked and the call is marked right or wrong. This is the only number to trust about how good the model is.</p>
+  <div class="panel soft"><div class="tablewrap">
+    <table id="acctable"><thead><tr><th>Asset</th><th>Period</th><th class="num">Calls made</th><th class="num">Right</th></tr></thead><tbody></tbody></table>
+  </div></div>
 </section>
 
-<footer>Prices: Yahoo Finance (COMEX gold and silver, NSE stocks, USD/INR). News: Google News. Indian gold and silver prices shown are estimates adding import duty and GST to the international rate; jeweller and MCX prices will differ by a few hundred rupees.</footer>
+<section id="guide">
+  <h2>How to read this page</h2>
+  <div class="panel soft"><div class="in">
+    <details><summary>What does "62% likely up" mean?</summary><p>The model thinks there is a 62 in 100 chance the price is higher at the end of that period than it is now. It is not a promise. Even a good call at 62% is wrong about 4 times in 10.</p></details>
+    <details><summary>Why is almost everything close to 50%?</summary><p>Because short-term prices are mostly unpredictable. A system that was right 70% of the time on daily moves would be the best in the world. Numbers near 50% mean "no clear signal", and the page says so instead of guessing.</p></details>
+    <details><summary>What is "momentum"?</summary><p>A measure called RSI, from 0 to 100, of how hard the price has been pushed recently. Above 70 means it has risen fast and may be stretched; below 30 means it has fallen fast and may be oversold. Between 30 and 70 is normal.</p></details>
+    <details><summary>Where do the gold and silver prices come from?</summary><p>From the world price in US dollars per ounce, converted to rupees at today's exchange rate and into Indian units. The "India" figure adds import duty and GST. Jewellers add making charges, so shop prices are higher.</p></details>
+    <details><summary>How is the outlook calculated?</summary><p>Four things: the price trend (technical), a statistical model trained on that asset's own history (quantitative), today's headlines scored as positive or negative (sentiment), and any earnings or valuation news (fundamental). They are combined into one probability per period.</p></details>
+    <details><summary>Should I buy or sell based on this?</summary><p>No. Use it to understand what the data is pointing to and to check how often it is right over time. Decide with your own judgement, and never put in money you cannot afford to lose.</p></details>
+  </div></div>
+</section>
+
+<footer>Prices from Yahoo Finance (COMEX gold and silver, NSE stocks, USD/INR). News from Google News. Updated hourly by an automatic job; the time of the last update is shown at the top. Nothing here is financial advice.</footer>
 </div>
 
 <script>
+/* ---------- helpers that turn numbers into words ---------- */
 const inr = n => n == null ? '—' : '₹' + Math.round(n).toLocaleString('en-IN');
-const inr2 = n => n == null ? '—' : '₹' + n.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+const inr2 = n => n == null ? '—' : '₹' + n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
 const pct = n => n == null ? '—' : `<span class="${n>0?'pos':n<0?'neg':''}">${n>0?'+':''}${n.toFixed(2)}%</span>`;
-const dir = l => l==='lean buy'?'up':l==='lean sell'?'down':'';
-const word = l => l==='lean buy'?'Likely up':l==='lean sell'?'Likely down':'No edge';
-const chip = (h,v) => `<span class="chip ${dir(v.label)}">${h} <em>${Math.round(v.prob_up*100)}%</em></span>`;
-const cell = v => `<td><span class="bar ${dir(v.label)}"><i style="width:${Math.round(v.prob_up*100)}%"></i></span>${Math.round(v.prob_up*100)}% <span style="color:var(--ink-2)">${word(v.label)}</span></td>`;
+const dir = l => l==='lean buy'?'up':l==='lean sell'?'down':'flat';
+const word = l => l==='lean buy'?'Likely up':l==='lean sell'?'Likely down':'No clear signal';
+const period = {'1h':'next hour','6h':'next 6 hours','1d':'next day','1w':'next week','1m':'next month'};
+const short = {'1h':'1 hr','6h':'6 hrs','1d':'1 day','1w':'1 week','1m':'1 month'};
+const chip = (h,v) => `<span class="chip ${dir(v.label)}">${short[h]} <em>${Math.round(v.prob_up*100)}%</em></span>`;
 const when = t => new Date(t*1000).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 const fresh = u => fetch(u+'?t='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null);
-
-function metalPanel(key, a){
-  const r=a.rates, g=key==='GOLD';
-  const rows = g
-    ? [['22K (est.)',inr(r.inr_22k_est)],['18K (est.)',inr(r.inr_18k_est)],['International, no duty',inr(r.inr_intl)],['COMEX',`$${r.usd_per_oz.toLocaleString('en-IN')} / oz`],['USD/INR',r.usdinr]]
-    : [['International, no duty',inr(r.inr_intl)],['COMEX',`$${r.usd_per_oz.toLocaleString('en-IN')} / oz`],['USD/INR',r.usdinr]];
-  return `<div class="metal ${key.toLowerCase()}">
-    <div class="title"><h3>${a.name} ${r.purity}</h3><span>India estimate, per ${r.unit}</span></div>
-    <div class="big">${inr(r.inr_india_est)}<small>/ ${r.unit}</small></div>
-    <div class="chg">Today ${pct(a.change_1d_pct)} &nbsp; This week ${pct(a.change_1w_pct)}</div>
-    <dl>${rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
-    <div class="outlook">${Object.entries(a.horizons).map(([h,v])=>chip(h,v)).join('')}</div>
-    <p class="card why" style="border:0;padding:0;background:none">${a.reasons.technical}. ${a.reasons.sentiment||''}</p>
-  </div>`;
+function rsiWords(r){ if(r==null) return '—'; if(r>70) return `${Math.round(r)} · stretched high`; if(r<30) return `${Math.round(r)} · oversold`; return `${Math.round(r)} · normal`; }
+function trendWords(t){ t=t||''; if(t.includes('uptrend')) return 'Price is above its recent averages, so the trend is up.'; if(t.includes('downtrend')) return 'Price is below its recent averages, so the trend is down.'; return 'Price is close to its recent averages; no strong trend.'; }
+function verdictSentence(a){
+  const d=a.horizons['1d'], w=a.horizons['1w'];
+  const p=Math.round(d.prob_up*100);
+  const lead = d.label==='lean buy'?`<b>Leaning up over the next day</b> (${p}% chance of being higher).`
+             : d.label==='lean sell'?`<b>Leaning down over the next day</b> (${p}% chance of being higher).`
+             : `<b>No clear direction for the next day</b> (${p}% chance of being higher).`;
+  const wk = w.label==='lean buy'?'Over the week the lean is up.':w.label==='lean sell'?'Over the week the lean is down.':'The week ahead is unclear too.';
+  return `<div class="verdict ${dir(d.label)}">${lead} ${wk}</div>`;
+}
+function whyList(a){
+  const s=a.reasons.sentiment_score||0;
+  const news = s>0.3?'Recent headlines read positive.':s<-0.3?'Recent headlines read negative.':'Recent headlines are mixed or quiet.';
+  return `<div class="why"><ul><li>${trendWords(a.reasons.technical)}</li><li>Momentum: ${rsiWords(a.reasons.rsi)}.</li><li>${news}</li></ul></div>`;
 }
 
-function detailRow(a, cols){
+/* ---------- gold and silver ---------- */
+function metalPanel(key,a){
+  const r=a.rates, g=key==='GOLD';
+  const rows = g
+    ? [['22K',inr(r.inr_22k_est)],['18K',inr(r.inr_18k_est)],['World price, no duty',inr(r.inr_intl)],['World price',`$${r.usd_per_oz.toLocaleString('en-IN')} / oz`]]
+    : [['World price, no duty',inr(r.inr_intl)],['World price',`$${r.usd_per_oz.toLocaleString('en-IN')} / oz`],['Exchange rate',`₹${r.usdinr} per $`]];
+  return `<div class="panel metal"><div class="in">
+    <div class="head"><h3><span class="coin ${key.toLowerCase()}"></span>${a.name} ${r.purity}</h3><span class="unit">India price · per ${r.unit}</span></div>
+    <div class="big">${inr(r.inr_india_est)}<small>/ ${r.unit}</small></div>
+    <div class="chg">Today ${pct(a.change_1d_pct)} &nbsp;·&nbsp; This week ${pct(a.change_1w_pct)}</div>
+    ${verdictSentence(a)}
+    <div class="rates">${rows.map(([k,v])=>`<div><span>${k}</span><b>${v}</b></div>`).join('')}</div>
+    ${whyList(a)}
+    <div class="hz">${Object.entries(a.horizons).map(([h,v])=>chip(h,v)).join('')}</div>
+  </div></div>`;
+}
+
+/* ---------- stocks ---------- */
+const sw = l => l==='lean buy'?'Up':l==='lean sell'?'Down':'Flat';
+const cell = v => `<td><span class="sig ${dir(v.label)}"><span class="w">${sw(v.label)}</span><span class="p">${Math.round(v.prob_up*100)}%</span></span></td>`;
+function detailRow(a){
   const news=(a.news||[]).map(n=>`<li><a href="${n.link}" target="_blank" rel="noopener">${n.title}</a></li>`).join('');
-  return `<tr class="detail"><td colspan="${cols}">
-    <b>Technical</b> ${a.reasons.technical}<br><b>News sentiment</b> ${a.reasons.sentiment||'—'}<br><b>Fundamentals</b> ${a.reasons.fundamental||'—'}
-    ${news?`<ul>${news}</ul>`:''}</td></tr>`;
+  return `<tr class="detail"><td colspan="9">${verdictSentence(a)}${whyList(a)}
+    <p style="margin:10px 0 0"><b>What the news reader said:</b> ${a.reasons.sentiment||'—'}<br><b>Fundamentals:</b> ${(a.reasons.fundamental&&!/^none/i.test(a.reasons.fundamental))?a.reasons.fundamental:'nothing notable in today\u2019s headlines'}</p>
+    ${news?`<p style="margin:10px 0 0"><b>Recent headlines</b></p><ul>${news}</ul>`:''}</td></tr>`;
 }
 
 async function load(){
-  const L = await fresh('latest.json');
-  if(!L){document.getElementById('meta').textContent='No run yet. Open the Actions tab on GitHub and run "hourly-scoring" once.';return;}
-  document.getElementById('meta').innerHTML=`Updated <b>${when(L.run_time)}</b>`+(L.nifty?` &nbsp; Nifty 50 <b>${L.nifty.level.toLocaleString('en-IN')}</b> ${pct(L.nifty.change_1d_pct)}`:'')+(L.usdinr?` &nbsp; USD/INR <b>${L.usdinr.toFixed(2)}</b>`:'');
-
-  const board=document.getElementById('board');
-  board.innerHTML=['GOLD','SILVER'].map(k=>L.assets[k]?metalPanel(k,L.assets[k]):`<div class="metal"><div class="empty">${k} not available this run${L.errors&&L.errors[k]?': '+L.errors[k]:''}</div></div>`).join('');
+  const L=await fresh('latest.json');
+  const strip=document.getElementById('strip');
+  if(!L){strip.textContent='No update yet. On GitHub, open the Actions tab and run "hourly-scoring" once.';return;}
+  strip.innerHTML=`<span><span class="dot"></span>Updated <b>${when(L.run_time)}</b></span>`
+    +(L.nifty?`<span>Nifty 50 <b>${L.nifty.level.toLocaleString('en-IN')}</b> ${pct(L.nifty.change_1d_pct)} today</span>`:'')
+    +(L.usdinr?`<span>Dollar <b>₹${L.usdinr.toFixed(2)}</b></span>`:'');
+  document.getElementById('board').innerHTML=['GOLD','SILVER'].map(k=>L.assets[k]?metalPanel(k,L.assets[k]):`<div class="panel"><div class="in empty">${k==='GOLD'?'Gold':'Silver'} data was not available in this update.</div></div>`).join('');
 
   const tb=document.querySelector('#stocktable tbody'); tb.innerHTML='';
   const stocks=Object.values(L.assets).filter(a=>a.kind==='stock');
-  if(!stocks.length) tb.innerHTML='<tr><td colspan="9" class="empty">No stock data this run.</td></tr>';
+  if(!stocks.length) tb.innerHTML='<tr><td colspan="9" class="empty">No stock data in this update.</td></tr>';
   for(const a of stocks){
-    const h=a.horizons;
-    const tr=document.createElement('tr'); tr.className='row';
-    tr.innerHTML=`<td><b style="font-weight:500">${a.symbol}</b><br><span style="color:var(--ink-2);font-size:13px">${a.name}</span></td><td class="num">${inr2(a.price_inr)}</td><td class="num">${pct(a.change_1d_pct)}</td>${['1h','6h','1d','1w','1m'].map(k=>cell(h[k])).join('')}<td class="num">${a.reasons.rsi}</td>`;
-    tr.onclick=()=>{const n=tr.nextElementSibling; if(n&&n.classList.contains('detail')) n.remove(); else tr.insertAdjacentHTML('afterend',detailRow(a,9));};
+    const h=a.horizons, tr=document.createElement('tr'); tr.className='row';
+    tr.innerHTML=`<td>${a.name}<span>${a.symbol}</span></td><td class="num">${inr2(a.price_inr)}</td><td class="num">${pct(a.change_1d_pct)}</td>${['1h','6h','1d','1w','1m'].map(k=>cell(h[k])).join('')}<td>${rsiWords(a.reasons.rsi)}</td>`;
+    tr.onclick=()=>{const n=tr.nextElementSibling; if(n&&n.classList.contains('detail')) n.remove(); else tr.insertAdjacentHTML('afterend',detailRow(a));};
     tb.appendChild(tr);
   }
 
   const ac=await fresh('accuracy.json')||[];
   const ab=document.querySelector('#acctable tbody');
-  ab.innerHTML=ac.length?'':'<tr><td colspan="4" class="empty">Nothing resolved yet. The first 1-hour signals get checked after the next run.</td></tr>';
-  for(const x of ac) ab.innerHTML+=`<tr><td>${x.asset}</td><td>${x.horizon}</td><td class="num">${x.n}</td><td class="num">${x.accuracy==null?'—':Math.round(x.accuracy*100)+'%'}</td></tr>`;
+  ab.innerHTML=ac.length?'':'<tr><td colspan="4" class="empty">Nothing to score yet. The first one-hour calls get checked after the next update.</td></tr>';
+  for(const x of ac) ab.innerHTML+=`<tr><td>${x.asset}</td><td>${period[x.horizon]||x.horizon}</td><td class="num">${x.n}</td><td class="num">${x.accuracy==null?'—':Math.round(x.accuracy*100)+'%'}</td></tr>`;
 }
 
+/* ---------- on-demand ---------- */
 async function loadOndemand(){
   const idx=await fresh('ondemand/index.json')||[];
   const box=document.getElementById('ondemand');
-  if(!idx.length){box.innerHTML='<div class="empty">No on-demand checks yet.</div>';return;}
+  if(!idx.length){box.innerHTML='<div class="empty">No checks run yet. Your results will appear here.</div>';return;}
   const items=await Promise.all(idx.slice(0,12).map(i=>fresh(`ondemand/${i.symbol}.json`)));
   box.innerHTML=items.filter(Boolean).map(a=>{
     const price=a.kind==='metal'?`${inr(a.rates.inr_india_est)}<small> / ${a.rates.unit}, ${a.rates.purity}</small>`:`${inr2(a.price_inr)}<small> ${pct(a.change_1d_pct)} today</small>`;
-    return `<div class="card"><h4>${a.name}</h4><div class="when">${a.symbol} · checked ${when(a.scored_at)}</div>
-      <div class="price">${price}</div>
-      <div class="outlook">${Object.entries(a.horizons).map(([h,v])=>chip(h,v)).join('')}</div>
-      <p class="why">${a.reasons.technical}. ${a.reasons.sentiment||''}</p></div>`;
+    return `<div class="card"><h4>${a.name}</h4><div class="when">${a.symbol} · checked ${when(a.scored_at)}</div><div class="price">${price}</div>${verdictSentence(a)}${whyList(a)}<div class="hz">${Object.entries(a.horizons).map(([h,v])=>chip(h,v)).join('')}</div></div>`;
   }).join('');
 }
-
 async function setupCheck(){
   const list=await fresh('stocks.json')||[];
   document.getElementById('symlist').innerHTML=[['GOLD','Gold 24K'],['SILVER','Silver 999'],...list].map(([s,n])=>`<option value="${s}">${n}</option>`).join('');
-  const host=location.hostname, user=host.split('.')[0], repo=location.pathname.split('/').filter(Boolean)[0]||'marketlens';
+  const user=location.hostname.split('.')[0], repo=location.pathname.split('/').filter(Boolean)[0]||'marketlens';
   const link=document.getElementById('runlink');
   link.href=`https://github.com/${user}/${repo}/actions/workflows/check.yml`;
-  link.onclick=()=>{const s=document.getElementById('sym').value.trim().toUpperCase(); if(s) link.textContent=`Run analysis for ${s} ↗`;};
   document.getElementById('sym').oninput=e=>{const s=e.target.value.trim().toUpperCase(); link.textContent=s?`Run analysis for ${s}`:'Run analysis';};
 }
+
+/* ---------- soft metallic light, very slow ---------- */
+(function(){
+  const c=document.getElementById('sky'),x=c.getContext('2d');
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function size(){c.width=innerWidth;c.height=innerHeight}
+  size();addEventListener('resize',size);
+  const blobs=[{r:.55,c:'rgba(201,162,74,.10)'},{r:.5,c:'rgba(154,163,178,.14)'},{r:.45,c:'rgba(255,255,255,.6)'}];
+  function draw(t){
+    x.clearRect(0,0,c.width,c.height);
+    blobs.forEach((b,i)=>{
+      const px=c.width*(.5+.38*Math.cos(t/26000+i*2.1)), py=c.height*(.35+.3*Math.sin(t/31000+i*1.7)), r=Math.max(c.width,c.height)*b.r;
+      const g=x.createRadialGradient(px,py,0,px,py,r); g.addColorStop(0,b.c); g.addColorStop(1,'rgba(255,255,255,0)');
+      x.fillStyle=g; x.fillRect(0,0,c.width,c.height);
+    });
+    if(!still) requestAnimationFrame(draw);
+  }
+  draw(0);
+})();
 
 load(); loadOndemand(); setupCheck();
 </script>
