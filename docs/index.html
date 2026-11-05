@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MarketLens — Gold, silver and NSE signals in ₹</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F7F9;--panel:#FFFFFF;--ink:#17202E;--ink-2:#55627A;--line:#D8DEE7;--line-2:#EBEFF4;
+  --up:#1D7A49;--up-bg:#E6F4EC;--down:#B32B1E;--down-bg:#FBEAE7;--flat:#6B7689;--flat-bg:#EEF1F5;
+  --gold:#A8832A;--silver:#6F7B8C;--focus:#2457C5;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#0F141C;--panel:#161C26;--ink:#E8ECF2;--ink-2:#9AA6B8;--line:#2A3342;--line-2:#1F2733;
+  --up:#4CC47E;--up-bg:#163424;--down:#F0786B;--down-bg:#3D1F1B;--flat:#9AA6B8;--flat-bg:#232B38;
+  --gold:#D9B35A;--silver:#A9B4C4;--focus:#6B9BFF;color-scheme:dark;
+}}
+*{box-sizing:border-box}
+html{scroll-padding-top:12px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.5;font-variant-numeric:tabular-nums}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px 60px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 24px;padding:28px 0 18px;border-bottom:1px solid var(--line)}
+header h1{margin:0;font-size:22px;font-weight:600;letter-spacing:-.01em}
+header .meta{color:var(--ink-2);font-size:14px}
+header .meta b{color:var(--ink);font-weight:500}
+h2{font-size:17px;font-weight:600;margin:40px 0 4px}
+.sub{color:var(--ink-2);font-size:14px;margin:0 0 14px}
+.notice{margin:18px 0 0;padding:12px 14px;border-left:3px solid var(--gold);background:var(--panel);font-size:14px;color:var(--ink-2)}
+.notice b{color:var(--ink);font-weight:500}
+
+/* bullion board */
+.board{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+@media(max-width:720px){.board{grid-template-columns:1fr}}
+.metal{background:var(--panel);border:1px solid var(--line);padding:20px 22px 18px}
+.metal.gold{border-top:4px solid var(--gold)}.metal.silver{border-top:4px solid var(--silver)}
+.metal .title{display:flex;justify-content:space-between;align-items:baseline}
+.metal .title h3{margin:0;font-size:16px;font-weight:600}
+.metal .title span{color:var(--ink-2);font-size:13px}
+.metal .big{font-size:38px;font-weight:600;letter-spacing:-.02em;line-height:1.1;margin:10px 0 2px}
+.metal .big small{font-size:15px;font-weight:400;color:var(--ink-2);margin-left:6px}
+.metal .chg{font-size:14px;margin-bottom:14px}
+.metal dl{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:0 0 14px;font-size:14px}
+.metal dt{color:var(--ink-2)}.metal dd{margin:0;text-align:right}
+.metal .outlook{display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid var(--line-2);padding-top:12px}
+
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;font-size:13px;font-weight:500;background:var(--flat-bg);color:var(--flat);white-space:nowrap}
+.chip.up{background:var(--up-bg);color:var(--up)}.chip.down{background:var(--down-bg);color:var(--down)}
+.chip em{font-style:normal;font-weight:400;opacity:.8}
+.pos{color:var(--up)}.neg{color:var(--down)}
+
+/* tables */
+.tablewrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line-2);vertical-align:middle;white-space:nowrap}
+th{font-weight:500;color:var(--ink-2);background:var(--panel);position:sticky;top:0}
+td.num,th.num{text-align:right}
+tr.row{cursor:pointer}tr.row:hover td{background:var(--line-2)}
+tr.detail td{white-space:normal;background:var(--paper);color:var(--ink-2);padding:12px 16px 14px}
+tr.detail td b{color:var(--ink);font-weight:500}
+tr.detail ul{margin:8px 0 0;padding-left:18px}
+.bar{display:inline-block;width:46px;height:6px;background:var(--line);vertical-align:middle;margin-right:7px;border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--flat)}
+.bar.up i{background:var(--up)}.bar.down i{background:var(--down)}
+
+/* check panel */
+.check{background:var(--panel);border:1px solid var(--line);padding:20px 22px;display:grid;grid-template-columns:1fr auto;gap:14px 16px;align-items:end}
+@media(max-width:720px){.check{grid-template-columns:1fr}}
+label{display:block;font-size:14px;color:var(--ink-2);margin-bottom:6px}
+input[type=text]{width:100%;padding:10px 12px;font:inherit;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:4px}
+input:focus,button:focus,a.btn:focus{outline:2px solid var(--focus);outline-offset:2px}
+.btn{display:inline-block;padding:10px 16px;font:inherit;font-weight:500;border:1px solid var(--ink);background:var(--ink);color:var(--paper);border-radius:4px;text-decoration:none;cursor:pointer}
+.btn.quiet{background:transparent;color:var(--ink)}
+.howto{grid-column:1/-1;font-size:14px;color:var(--ink-2);margin:0;padding-top:4px;border-top:1px solid var(--line-2)}
+.howto ol{margin:6px 0 0;padding-left:20px}
+.results{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);padding:14px 16px}
+.card h4{margin:0;font-size:15px;font-weight:600}
+.card .when{font-size:13px;color:var(--ink-2)}
+.card .price{font-size:22px;font-weight:600;margin:6px 0 8px}
+.card .price small{font-size:13px;font-weight:400;color:var(--ink-2)}
+.card .outlook{display:flex;gap:6px;flex-wrap:wrap}
+.card .why{font-size:13px;color:var(--ink-2);margin:10px 0 0}
+.empty{color:var(--ink-2);font-size:14px;padding:14px 0}
+footer{margin-top:50px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
+@media (prefers-reduced-motion:no-preference){tr.detail{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>MarketLens</h1>
+  <div class="meta" id="meta">Loading the latest run…</div>
+</header>
+
+<p class="notice"><b>Research signals, not advice.</b> Each number is a model probability with the reasons shown. Short-horizon accuracy of 50–60% is normal. Check the track record at the bottom before trusting anything, and never trade real money on this.</p>
+
+<section id="bullion">
+  <h2>Gold and silver</h2>
+  <p class="sub">Rates in ₹ from the international price and today's USD/INR. Refreshed every hour on the hour.</p>
+  <div class="board" id="board"></div>
+</section>
+
+<section id="stocks">
+  <h2>Stock signals</h2>
+  <p class="sub">Updated hourly. Click a row for the reasoning and recent headlines. Probability shown is the chance of a higher price after each period.</p>
+  <div class="tablewrap">
+    <table id="stocktable">
+      <thead><tr><th>Stock</th><th class="num">Price ₹</th><th class="num">Today</th><th>1 hour</th><th>6 hours</th><th>1 day</th><th>1 week</th><th>1 month</th><th class="num">RSI</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="check">
+  <h2>Check a particular stock or metal</h2>
+  <p class="sub">Pick any NSE stock (or gold / silver) and run a fresh analysis on it. Results land here within about two minutes.</p>
+  <div class="check">
+    <div>
+      <label for="sym">NSE symbol or name</label>
+      <input type="text" id="sym" list="symlist" placeholder="e.g. RELIANCE, TATASTEEL, GOLD, SILVER" autocomplete="off">
+      <datalist id="symlist"></datalist>
+    </div>
+    <a class="btn" id="runlink" href="#" target="_blank" rel="noopener">Run analysis</a>
+    <div class="howto">
+      This opens the run page on GitHub (sign-in needed, it's your repo). There:
+      <ol><li>Click <b>Run workflow</b>.</li><li>Type the symbol shown here into the box and click the green <b>Run workflow</b>.</li><li>Come back and refresh this page after about two minutes.</li></ol>
+    </div>
+  </div>
+  <div class="results" id="ondemand"></div>
+</section>
+
+<section id="record">
+  <h2>Track record</h2>
+  <p class="sub">Every signal is logged. When its period passes, the actual price is checked and the signal is marked right or wrong. "No edge" calls are not counted.</p>
+  <div class="tablewrap">
+    <table id="acctable"><thead><tr><th>Asset</th><th>Period</th><th class="num">Signals</th><th class="num">Right</th></tr></thead><tbody></tbody></table>
+  </div>
+</section>
+
+<footer>Prices: Yahoo Finance (COMEX gold and silver, NSE stocks, USD/INR). News: Google News. Indian gold and silver prices shown are estimates adding import duty and GST to the international rate; jeweller and MCX prices will differ by a few hundred rupees.</footer>
+</div>
+
+<script>
+const inr = n => n == null ? '—' : '₹' + Math.round(n).toLocaleString('en-IN');
+const inr2 = n => n == null ? '—' : '₹' + n.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+const pct = n => n == null ? '—' : `<span class="${n>0?'pos':n<0?'neg':''}">${n>0?'+':''}${n.toFixed(2)}%</span>`;
+const dir = l => l==='lean buy'?'up':l==='lean sell'?'down':'';
+const word = l => l==='lean buy'?'Likely up':l==='lean sell'?'Likely down':'No edge';
+const chip = (h,v) => `<span class="chip ${dir(v.label)}">${h} <em>${Math.round(v.prob_up*100)}%</em></span>`;
+const cell = v => `<td><span class="bar ${dir(v.label)}"><i style="width:${Math.round(v.prob_up*100)}%"></i></span>${Math.round(v.prob_up*100)}% <span style="color:var(--ink-2)">${word(v.label)}</span></td>`;
+const when = t => new Date(t*1000).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+const fresh = u => fetch(u+'?t='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null);
+
+function metalPanel(key, a){
+  const r=a.rates, g=key==='GOLD';
+  const rows = g
+    ? [['22K (est.)',inr(r.inr_22k_est)],['18K (est.)',inr(r.inr_18k_est)],['International, no duty',inr(r.inr_intl)],['COMEX',`$${r.usd_per_oz.toLocaleString('en-IN')} / oz`],['USD/INR',r.usdinr]]
+    : [['International, no duty',inr(r.inr_intl)],['COMEX',`$${r.usd_per_oz.toLocaleString('en-IN')} / oz`],['USD/INR',r.usdinr]];
+  return `<div class="metal ${key.toLowerCase()}">
+    <div class="title"><h3>${a.name} ${r.purity}</h3><span>India estimate, per ${r.unit}</span></div>
+    <div class="big">${inr(r.inr_india_est)}<small>/ ${r.unit}</small></div>
+    <div class="chg">Today ${pct(a.change_1d_pct)} &nbsp; This week ${pct(a.change_1w_pct)}</div>
+    <dl>${rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
+    <div class="outlook">${Object.entries(a.horizons).map(([h,v])=>chip(h,v)).join('')}</div>
+    <p class="card why" style="border:0;padding:0;background:none">${a.reasons.technical}. ${a.reasons.sentiment||''}</p>
+  </div>`;
+}
+
+function detailRow(a, cols){
+  const news=(a.news||[]).map(n=>`<li><a href="${n.link}" target="_blank" rel="noopener">${n.title}</a></li>`).join('');
+  return `<tr class="detail"><td colspan="${cols}">
+    <b>Technical</b> ${a.reasons.technical}<br><b>News sentiment</b> ${a.reasons.sentiment||'—'}<br><b>Fundamentals</b> ${a.reasons.fundamental||'—'}
+    ${news?`<ul>${news}</ul>`:''}</td></tr>`;
+}
+
+async function load(){
+  const L = await fresh('latest.json');
+  if(!L){document.getElementById('meta').textContent='No run yet. Open the Actions tab on GitHub and run "hourly-scoring" once.';return;}
+  document.getElementById('meta').innerHTML=`Updated <b>${when(L.run_time)}</b>`+(L.nifty?` &nbsp; Nifty 50 <b>${L.nifty.level.toLocaleString('en-IN')}</b> ${pct(L.nifty.change_1d_pct)}`:'')+(L.usdinr?` &nbsp; USD/INR <b>${L.usdinr.toFixed(2)}</b>`:'');
+
+  const board=document.getElementById('board');
+  board.innerHTML=['GOLD','SILVER'].map(k=>L.assets[k]?metalPanel(k,L.assets[k]):`<div class="metal"><div class="empty">${k} not available this run${L.errors&&L.errors[k]?': '+L.errors[k]:''}</div></div>`).join('');
+
+  const tb=document.querySelector('#stocktable tbody'); tb.innerHTML='';
+  const stocks=Object.values(L.assets).filter(a=>a.kind==='stock');
+  if(!stocks.length) tb.innerHTML='<tr><td colspan="9" class="empty">No stock data this run.</td></tr>';
+  for(const a of stocks){
+    const h=a.horizons;
+    const tr=document.createElement('tr'); tr.className='row';
+    tr.innerHTML=`<td><b style="font-weight:500">${a.symbol}</b><br><span style="color:var(--ink-2);font-size:13px">${a.name}</span></td><td class="num">${inr2(a.price_inr)}</td><td class="num">${pct(a.change_1d_pct)}</td>${['1h','6h','1d','1w','1m'].map(k=>cell(h[k])).join('')}<td class="num">${a.reasons.rsi}</td>`;
+    tr.onclick=()=>{const n=tr.nextElementSibling; if(n&&n.classList.contains('detail')) n.remove(); else tr.insertAdjacentHTML('afterend',detailRow(a,9));};
+    tb.appendChild(tr);
+  }
+
+  const ac=await fresh('accuracy.json')||[];
+  const ab=document.querySelector('#acctable tbody');
+  ab.innerHTML=ac.length?'':'<tr><td colspan="4" class="empty">Nothing resolved yet. The first 1-hour signals get checked after the next run.</td></tr>';
+  for(const x of ac) ab.innerHTML+=`<tr><td>${x.asset}</td><td>${x.horizon}</td><td class="num">${x.n}</td><td class="num">${x.accuracy==null?'—':Math.round(x.accuracy*100)+'%'}</td></tr>`;
+}
+
+async function loadOndemand(){
+  const idx=await fresh('ondemand/index.json')||[];
+  const box=document.getElementById('ondemand');
+  if(!idx.length){box.innerHTML='<div class="empty">No on-demand checks yet.</div>';return;}
+  const items=await Promise.all(idx.slice(0,12).map(i=>fresh(`ondemand/${i.symbol}.json`)));
+  box.innerHTML=items.filter(Boolean).map(a=>{
+    const price=a.kind==='metal'?`${inr(a.rates.inr_india_est)}<small> / ${a.rates.unit}, ${a.rates.purity}</small>`:`${inr2(a.price_inr)}<small> ${pct(a.change_1d_pct)} today</small>`;
+    return `<div class="card"><h4>${a.name}</h4><div class="when">${a.symbol} · checked ${when(a.scored_at)}</div>
+      <div class="price">${price}</div>
+      <div class="outlook">${Object.entries(a.horizons).map(([h,v])=>chip(h,v)).join('')}</div>
+      <p class="why">${a.reasons.technical}. ${a.reasons.sentiment||''}</p></div>`;
+  }).join('');
+}
+
+async function setupCheck(){
+  const list=await fresh('stocks.json')||[];
+  document.getElementById('symlist').innerHTML=[['GOLD','Gold 24K'],['SILVER','Silver 999'],...list].map(([s,n])=>`<option value="${s}">${n}</option>`).join('');
+  const host=location.hostname, user=host.split('.')[0], repo=location.pathname.split('/').filter(Boolean)[0]||'marketlens';
+  const link=document.getElementById('runlink');
+  link.href=`https://github.com/${user}/${repo}/actions/workflows/check.yml`;
+  link.onclick=()=>{const s=document.getElementById('sym').value.trim().toUpperCase(); if(s) link.textContent=`Run analysis for ${s} ↗`;};
+  document.getElementById('sym').oninput=e=>{const s=e.target.value.trim().toUpperCase(); link.textContent=s?`Run analysis for ${s}`:'Run analysis';};
+}
+
+load(); loadOndemand(); setupCheck();
+</script>
+</body>
+</html>

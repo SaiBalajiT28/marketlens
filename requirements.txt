@@ -1,0 +1,5 @@
+yfinance
+feedparser
+pandas
+scikit-learn
+requests
