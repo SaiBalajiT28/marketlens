@@ -117,6 +117,21 @@ details[open] summary::after{content:"–"}
 details p{margin:0 0 14px;color:var(--ink-2);max-width:72ch}
 .empty{color:var(--ink-2);padding:12px 0}
 footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2);max-width:80ch}
+
+.legend{display:flex;flex-wrap:wrap;gap:10px 22px;margin:14px 0 0;font-size:14px;color:var(--ink-2)}
+.legend b{font-weight:600}
+.arrow{display:inline-block;width:22px;height:22px;border-radius:50%;text-align:center;line-height:22px;font-size:12px;font-weight:700;margin-right:6px;vertical-align:middle}
+.arrow.up{background:var(--up-bg);color:var(--up)}.arrow.down{background:var(--down-bg);color:var(--down)}.arrow.flat{background:var(--flat-bg);color:var(--flat)}
+.next{display:grid;gap:8px;margin:14px 0}
+.next .r{display:grid;grid-template-columns:96px 1fr auto;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:#F7F8FA}
+.next .r .t{color:var(--ink-2);font-size:14px}
+.next .r .v{font-weight:600}
+.next .r .c{font-size:13px;color:var(--ink-3)}
+.next .r.up{background:var(--up-bg)}.next .r.down{background:var(--down-bg)}
+.call{font-weight:600;white-space:nowrap}
+.call .c{display:block;font-weight:400;font-size:12.5px;color:var(--ink-3)}
+.move{font-size:14px;color:var(--ink-2);margin:4px 0 0}
+details.more{border:0;margin-top:8px}details.more summary{font-weight:500;font-size:14px;color:var(--ink-2);padding:6px 0}
 </style>
 </head>
 <body>
@@ -132,20 +147,21 @@ footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);font-si
   <h1>Where gold, silver and Indian stocks may head next, in plain words.</h1>
   <p>Every hour this page reads the latest prices and news, then estimates the chance that each asset is higher in an hour, a day, a week or a month. It also keeps score of its own past calls. It is a research tool, not advice.</p>
   <div class="strip" id="strip">Loading the latest update…</div>
+  <div class="legend"><span><span class="arrow up">▲</span><b>Likely to rise</b></span><span><span class="arrow down">▼</span><b>Likely to fall</b></span><span><span class="arrow flat">•</span><b>Could go either way</b></span><span>Each call also says how sure the model is: slight, fair or strong.</span></div>
 </section>
 
 <section id="bullion">
   <h2>Gold and silver today</h2>
-  <p class="sub">Prices are in rupees for the units Indian buyers use: gold per 10 grams, silver per kilogram. The "India" price adds import duty and GST to the world price; shop prices add making charges on top.</p>
+  <p class="sub">Today’s price, how much it moved, and whether it looks likely to rise or fall. Gold is per 10 grams and silver per kilogram, the way shops quote them. Shops add making charges on top of these prices.</p>
   <div class="board" id="board"></div>
 </section>
 
 <section id="stocks">
   <h2>Stock outlook</h2>
-  <p class="sub">For each stock, the chance that the price is higher after each period. "Up" means a 60% or better chance of a higher price, "Down" means 40% or less, "Flat" means no clear signal. Click a row for the reasons in plain words.</p>
+  <p class="sub">For each stock: today’s price, how much it moved, and whether it looks likely to rise or fall tomorrow, this week and this month. Click a stock for the reasons.</p>
   <div class="panel soft"><div class="tablewrap">
     <table id="stocktable">
-      <thead><tr><th>Stock</th><th class="num">Price</th><th class="num">Today</th><th>1 hour</th><th>6 hours</th><th>1 day</th><th>1 week</th><th>1 month</th><th>Momentum</th></tr></thead>
+      <thead><tr><th>Stock</th><th class="num">Price now</th><th class="num">Moved today</th><th>Tomorrow</th><th>This week</th><th>This month</th></tr></thead>
       <tbody></tbody>
     </table>
   </div></div>
@@ -171,21 +187,21 @@ footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);font-si
 
 <section id="record">
   <h2>Track record</h2>
-  <p class="sub">Every call is saved. Once its period has passed, the real price is checked and the call is marked right or wrong. This is the only number to trust about how good the model is.</p>
+  <p class="sub">Every call this page makes is saved. When the time is up, the real price is checked and the call is marked right or wrong. This is how you know whether to trust it.</p>
   <div class="panel soft"><div class="tablewrap">
-    <table id="acctable"><thead><tr><th>Asset</th><th>Period</th><th class="num">Calls made</th><th class="num">Right</th></tr></thead><tbody></tbody></table>
+    <table id="acctable"><thead><tr><th>Asset</th><th>Looking ahead</th><th>How it did</th></tr></thead><tbody></tbody></table>
   </div></div>
 </section>
 
 <section id="guide">
   <h2>How to read this page</h2>
   <div class="panel soft"><div class="in">
-    <details><summary>What does "62% likely up" mean?</summary><p>The model thinks there is a 62 in 100 chance the price is higher at the end of that period than it is now. It is not a promise. Even a good call at 62% is wrong about 4 times in 10.</p></details>
-    <details><summary>Why is almost everything close to 50%?</summary><p>Because short-term prices are mostly unpredictable. A system that was right 70% of the time on daily moves would be the best in the world. Numbers near 50% mean "no clear signal", and the page says so instead of guessing.</p></details>
-    <details><summary>What is "momentum"?</summary><p>A measure called RSI, from 0 to 100, of how hard the price has been pushed recently. Above 70 means it has risen fast and may be stretched; below 30 means it has fallen fast and may be oversold. Between 30 and 70 is normal.</p></details>
-    <details><summary>Where do the gold and silver prices come from?</summary><p>From the world price in US dollars per ounce, converted to rupees at today's exchange rate and into Indian units. The "India" figure adds import duty and GST. Jewellers add making charges, so shop prices are higher.</p></details>
-    <details><summary>How is the outlook calculated?</summary><p>Four things: the price trend (technical), a statistical model trained on that asset's own history (quantitative), today's headlines scored as positive or negative (sentiment), and any earnings or valuation news (fundamental). They are combined into one probability per period.</p></details>
-    <details><summary>Should I buy or sell based on this?</summary><p>No. Use it to understand what the data is pointing to and to check how often it is right over time. Decide with your own judgement, and never put in money you cannot afford to lose.</p></details>
+    <details><summary>What do "likely to rise" and "likely to fall" mean?</summary><p>The page looks at the price trend, recent news, and how this asset has behaved in the past, and makes a best guess about the direction. "Likely to rise" means a rise is the more probable outcome. It is a lean, not a certainty.</p></details>
+    <details><summary>What do "slight", "fair" and "strong" mean?</summary><p>How confident the guess is. Slight means barely better than a coin toss. Fair means a clear lean. Strong means a firm lean. Even a strong call can be wrong; it just happens less often.</p></details>
+    <details><summary>Why does it so often say "could go either way"?</summary><p>Because short-term prices are hard to predict, and the page says so instead of pretending. Any website that claims it knows where prices go next is guessing or selling something.</p></details>
+    <details><summary>Where does the gold price come from?</summary><p>From the world gold price, converted to rupees at today’s exchange rate and into Indian weights. Import duty and GST are added to get the India price. Your jeweller adds making charges, so the shop price will be a bit higher.</p></details>
+    <details><summary>Is the "price abroad" useful to me?</summary><p>It shows how much of the India price is tax. The gap between the two numbers is duty plus GST.</p></details>
+    <details><summary>Should I buy or sell based on this?</summary><p>No. Use it to understand what the data is pointing to and check the track record to see how often it is right. Decide with your own judgement, and never put in money you cannot afford to lose.</p></details>
   </div></div>
 </section>
 
@@ -198,50 +214,57 @@ const inr = n => n == null ? '—' : '₹' + Math.round(n).toLocaleString('en-IN
 const inr2 = n => n == null ? '—' : '₹' + n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
 const pct = n => n == null ? '—' : `<span class="${n>0?'pos':n<0?'neg':''}">${n>0?'+':''}${n.toFixed(2)}%</span>`;
 const dir = l => l==='lean buy'?'up':l==='lean sell'?'down':'flat';
-const word = l => l==='lean buy'?'Likely up':l==='lean sell'?'Likely down':'No clear signal';
-const period = {'1h':'next hour','6h':'next 6 hours','1d':'next day','1w':'next week','1m':'next month'};
-const short = {'1h':'1 hr','6h':'6 hrs','1d':'1 day','1w':'1 week','1m':'1 month'};
-const chip = (h,v) => `<span class="chip ${dir(v.label)}">${short[h]} <em>${Math.round(v.prob_up*100)}%</em></span>`;
+const sym = {up:'▲',down:'▼',flat:'•'};
 const when = t => new Date(t*1000).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 const fresh = u => fetch(u+'?t='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null);
-function rsiWords(r){ if(r==null) return '—'; if(r>70) return `${Math.round(r)} · stretched high`; if(r<30) return `${Math.round(r)} · oversold`; return `${Math.round(r)} · normal`; }
-function trendWords(t){ t=t||''; if(t.includes('uptrend')) return 'Price is above its recent averages, so the trend is up.'; if(t.includes('downtrend')) return 'Price is below its recent averages, so the trend is down.'; return 'Price is close to its recent averages; no strong trend.'; }
-function odds(p){ const n=Math.round(p*100); if(n>=60) return `about ${Math.round(n/10)} in 10 chance of going up`; if(n<=40) return `about ${Math.round(n/10)} in 10 chance of going up`; return `${n}% chance of going up, close to a coin toss`; }
-function lean(v){ return v.label==='lean buy'?'more likely to rise than fall':v.label==='lean sell'?'more likely to fall than rise':'no clear direction'; }
-function verdictSentence(a){
-  const d=a.horizons['1d'], w=a.horizons['1w'];
-  return `<div class="verdict ${dir(d.label)}"><b>Next day:</b> ${lean(d)} (${odds(d.prob_up)}).<br><b>Next week:</b> ${lean(w)} (${odds(w.prob_up)}).</div>`;
+const periodName = {'1h':'Next hour','6h':'Next 6 hours','1d':'Tomorrow','1w':'This week','1m':'This month'};
+function callWords(v){
+  const d=dir(v.label), p=v.prob_up, away=Math.abs(p-0.5);
+  const text = d==='up'?'Likely to rise':d==='down'?'Likely to fall':'Could go either way';
+  const sure = d==='flat'?'':away>=0.25?'strong':away>=0.16?'fair':'slight';
+  return {d,text,sure};
 }
-function whyList(a){
-  const s=a.reasons.sentiment_score||0;
-  const news = s>0.3?'Recent headlines read positive.':s<-0.3?'Recent headlines read negative.':'Recent headlines are mixed or quiet.';
-  return `<div class="why"><ul><li>${trendWords(a.reasons.technical)}</li><li>Momentum: ${rsiWords(a.reasons.rsi)}.</li><li>${news}</li></ul></div>`;
+function callCell(v){ const c=callWords(v); return `<td><span class="call"><span class="arrow ${c.d}">${sym[c.d]}</span>${c.text}<span class="c">${c.sure?c.sure+' lean':'no clear lean'}</span></span></td>`; }
+function nextRows(a, keys){
+  return `<div class="next">${keys.map(k=>{const v=a.horizons[k], c=callWords(v);
+    return `<div class="r ${c.d}"><span class="t">${periodName[k]}</span><span class="v"><span class="arrow ${c.d}">${sym[c.d]}</span>${c.text}</span><span class="c">${c.sure?c.sure+' lean':''}</span></div>`;}).join('')}</div>`;
 }
+function moveWords(a, unitPrice){
+  const p=a.change_1d_pct; if(p==null) return '';
+  const amt = unitPrice!=null ? Math.abs(unitPrice - unitPrice/(1+p/100)) : null;
+  const verb = p>0.05?'up':p<-0.05?'down':'unchanged';
+  return `<p class="move">Price ${verb} today${amt!=null&&verb!=='unchanged'?' by '+inr(amt):''} (${pct(p)}). Over the week: ${pct(a.change_1w_pct)}.</p>`;
+}
+function pressureWords(r){ if(r==null) return 'Buying and selling pressure: unknown.'; if(r>70) return 'Buying pressure has been unusually strong lately, which can mean the price is stretched and due to pause.'; if(r<30) return 'Selling pressure has been unusually strong lately, which can mean the price is beaten down and due to bounce.'; return 'Buying and selling pressure is normal.'; }
+function trendWords(t){ t=t||''; if(t.includes('uptrend')) return 'The price has been trending up over recent weeks.'; if(t.includes('downtrend')) return 'The price has been trending down over recent weeks.'; return 'The price has been moving sideways over recent weeks.'; }
+function newsWords(a){ const s=a.reasons.sentiment_score||0; return s>0.3?'Recent news about it is mostly good.':s<-0.3?'Recent news about it is mostly bad.':'Recent news is mixed or quiet.'; }
+function whyList(a){ return `<div class="why"><ul><li>${trendWords(a.reasons.technical)}</li><li>${pressureWords(a.reasons.rsi)}</li><li>${newsWords(a)}</li></ul></div>`; }
 
 /* ---------- gold and silver ---------- */
 function metalPanel(key,a){
   const r=a.rates, g=key==='GOLD';
   const rows = g
-    ? [['22K',inr(r.inr_22k_est)],['18K',inr(r.inr_18k_est)],['World price, no duty',inr(r.inr_intl)],['World price',`$${r.usd_per_oz.toLocaleString('en-IN')} / oz`]]
-    : [['World price, no duty',inr(r.inr_intl)],['World price',`$${r.usd_per_oz.toLocaleString('en-IN')} / oz`],['Exchange rate',`₹${r.usdinr} per $`]];
+    ? [['Gold 22K (most jewellery)',inr(r.inr_22k_est)],['Gold 18K',inr(r.inr_18k_est)],['Price abroad, before duty and GST',inr(r.inr_intl)]]
+    : [['Price abroad, before duty and GST',inr(r.inr_intl)],['Dollar rate used',`₹${r.usdinr}`]];
   return `<div class="panel metal"><div class="in">
     <div class="head"><h3><span class="coin ${key.toLowerCase()}"></span>${a.name} ${r.purity}</h3><span class="unit">India price · per ${r.unit}</span></div>
     <div class="big">${inr(r.inr_india_est)}<small>/ ${r.unit}</small></div>
-    <div class="chg">Today ${pct(a.change_1d_pct)} &nbsp;·&nbsp; This week ${pct(a.change_1w_pct)}</div>
-    ${verdictSentence(a)}
+    ${moveWords(a, r.inr_india_est)}
+    ${nextRows(a,['1d','1w','1m'])}
     <div class="rates">${rows.map(([k,v])=>`<div><span>${k}</span><b>${v}</b></div>`).join('')}</div>
-    ${whyList(a)}
-    <div class="hz">${Object.entries(a.horizons).map(([h,v])=>chip(h,v)).join('')}</div>
+    <p style="margin:0 0 4px;font-weight:600;font-size:14px">Why</p>${whyList(a)}
+    <details class="more"><summary>Short-term view (next hours)</summary>${nextRows(a,['1h','6h'])}</details>
   </div></div>`;
 }
 
 /* ---------- stocks ---------- */
-const sw = l => l==='lean buy'?'Up':l==='lean sell'?'Down':'Flat';
-const cell = v => `<td><span class="sig ${dir(v.label)}"><span class="w">${sw(v.label)}</span><span class="p">${Math.round(v.prob_up*100)}%</span></span></td>`;
 function detailRow(a){
   const news=(a.news||[]).map(n=>`<li><a href="${n.link}" target="_blank" rel="noopener">${n.title}</a></li>`).join('');
-  return `<tr class="detail"><td colspan="9">${verdictSentence(a)}${whyList(a)}
-    <p style="margin:10px 0 0"><b>What the news reader said:</b> ${a.reasons.sentiment||'—'}<br><b>Fundamentals:</b> ${(a.reasons.fundamental&&!/^none/i.test(a.reasons.fundamental))?a.reasons.fundamental:'nothing notable in today\u2019s headlines'}</p>
+  const fund=(a.reasons.fundamental&&!/^none/i.test(a.reasons.fundamental))?a.reasons.fundamental:'';
+  return `<tr class="detail"><td colspan="6">${moveWords(a, a.price_inr)}<p style="margin:8px 0 4px"><b>Why</b></p>${whyList(a)}
+    ${a.reasons.sentiment&&!/headlines scanned/i.test(a.reasons.sentiment)?`<p style="margin:10px 0 0"><b>From the news:</b> ${a.reasons.sentiment}</p>`:''}
+    ${fund?`<p style="margin:6px 0 0"><b>Company results and value:</b> ${fund}</p>`:''}
+    <details class="more"><summary>Short-term view (next hours)</summary>${nextRows(a,['1h','6h'])}</details>
     ${news?`<p style="margin:10px 0 0"><b>Recent headlines</b></p><ul>${news}</ul>`:''}</td></tr>`;
 }
 
@@ -251,23 +274,24 @@ async function load(){
   if(!L){strip.textContent='No update yet. On GitHub, open the Actions tab and run "hourly-scoring" once.';return;}
   strip.innerHTML=`<span><span class="dot"></span>Updated <b>${when(L.run_time)}</b></span>`
     +(L.nifty?`<span>Nifty 50 <b>${L.nifty.level.toLocaleString('en-IN')}</b> ${pct(L.nifty.change_1d_pct)} today</span>`:'')
-    +(L.usdinr?`<span>Dollar <b>₹${L.usdinr.toFixed(2)}</b></span>`:'');
+    +(L.usdinr?`<span>1 dollar = <b>₹${L.usdinr.toFixed(2)}</b></span>`:'');
   document.getElementById('board').innerHTML=['GOLD','SILVER'].map(k=>L.assets[k]?metalPanel(k,L.assets[k]):`<div class="panel"><div class="in empty">${k==='GOLD'?'Gold':'Silver'} data was not available in this update.</div></div>`).join('');
 
   const tb=document.querySelector('#stocktable tbody'); tb.innerHTML='';
   const stocks=Object.values(L.assets).filter(a=>a.kind==='stock');
-  if(!stocks.length) tb.innerHTML='<tr><td colspan="9" class="empty">No stock data in this update.</td></tr>';
+  if(!stocks.length) tb.innerHTML='<tr><td colspan="6" class="empty">No stock data in this update.</td></tr>';
   for(const a of stocks){
     const h=a.horizons, tr=document.createElement('tr'); tr.className='row';
-    tr.innerHTML=`<td>${a.name}<span>${a.symbol}</span></td><td class="num">${inr2(a.price_inr)}</td><td class="num">${pct(a.change_1d_pct)}</td>${['1h','6h','1d','1w','1m'].map(k=>cell(h[k])).join('')}<td>${rsiWords(a.reasons.rsi)}</td>`;
+    tr.innerHTML=`<td>${a.name}<span>${a.symbol}</span></td><td class="num">${inr2(a.price_inr)}</td><td class="num">${pct(a.change_1d_pct)}</td>${['1d','1w','1m'].map(k=>callCell(h[k])).join('')}`;
     tr.onclick=()=>{const n=tr.nextElementSibling; if(n&&n.classList.contains('detail')) n.remove(); else tr.insertAdjacentHTML('afterend',detailRow(a));};
     tb.appendChild(tr);
   }
 
   const ac=await fresh('accuracy.json')||[];
   const ab=document.querySelector('#acctable tbody');
-  ab.innerHTML=ac.length?'':'<tr><td colspan="4" class="empty">Nothing to score yet. The first one-hour calls get checked after the next update.</td></tr>';
-  for(const x of ac) ab.innerHTML+=`<tr><td>${x.asset}</td><td>${period[x.horizon]||x.horizon}</td><td class="num">${x.n}</td><td class="num">${x.accuracy==null?'—':Math.round(x.accuracy*100)+'%'}</td></tr>`;
+  ab.innerHTML=ac.length?'':'<tr><td colspan="3" class="empty">Nothing to score yet. The first calls get checked once their time is up.</td></tr>';
+  for(const x of ac){ const right=Math.round((x.accuracy||0)*x.n);
+    ab.innerHTML+=`<tr><td>${x.asset}</td><td>${periodName[x.horizon]||x.horizon}</td><td>Right ${right} times out of ${x.n} (${x.accuracy==null?'—':Math.round(x.accuracy*100)+'%'})</td></tr>`; }
 }
 
 /* ---------- on-demand ---------- */
@@ -278,7 +302,7 @@ async function loadOndemand(){
   const items=await Promise.all(idx.slice(0,12).map(i=>fresh(`ondemand/${i.symbol}.json`)));
   box.innerHTML=items.filter(Boolean).map(a=>{
     const price=a.kind==='metal'?`${inr(a.rates.inr_india_est)}<small> / ${a.rates.unit}, ${a.rates.purity}</small>`:`${inr2(a.price_inr)}<small> ${pct(a.change_1d_pct)} today</small>`;
-    return `<div class="card"><h4>${a.name}</h4><div class="when">${a.symbol} · checked ${when(a.scored_at)}</div><div class="price">${price}</div>${verdictSentence(a)}${whyList(a)}<div class="hz">${Object.entries(a.horizons).map(([h,v])=>chip(h,v)).join('')}</div></div>`;
+    return `<div class="card"><h4>${a.name}</h4><div class="when">${a.symbol} · checked ${when(a.scored_at)}</div><div class="price">${price}</div>${nextRows(a,['1d','1w','1m'])}<p style="margin:0 0 4px;font-weight:600;font-size:14px">Why</p>${whyList(a)}</div>`;
   }).join('');
 }
 async function setupCheck(){
