@@ -1,0 +1,27 @@
+name: hourly-scoring
+on:
+  schedule:
+    - cron: "0 * * * *"      # every hour at :00 UTC (GitHub may start it a few minutes late)
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: marketlens
+jobs:
+  score:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt
+      - run: python scorer.py
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}   # optional, free
+      - name: commit results
+        run: |
+          git config user.name "marketlens-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git pull --rebase || true
+          git add docs marketlens.db
+          git commit -m "hourly run $(date -u +%FT%TZ)" || echo "nothing to commit"
+          git push
